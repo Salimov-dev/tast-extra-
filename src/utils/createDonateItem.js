@@ -6,7 +6,10 @@ export function createDonateItem() {
     const createDonateItemHTML = document.createElement('div')
     createDonateItemHTML.className = 'donate-item'
     createDonateItemHTML.innerHTML = `${timeOfDonate} - <b>${donateIinput}$</b>`
-
+    
     const donatesContainerDIV = document.querySelector('.donates-container__donates')
-    donatesContainerDIV.prepend(createDonateItemHTML)
+    if (donateIinput != '') {
+        donatesContainerDIV.prepend(createDonateItemHTML)
+    } 
+        
 }
