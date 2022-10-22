@@ -8,8 +8,8 @@ export function createDonateItem() {
     createDonateItemHTML.innerHTML = `${timeOfDonate} - <b>${donateIinput}$</b>`
     
     const donatesContainerDIV = document.querySelector('.donates-container__donates')
-    if (donateIinput != '') {
-        donatesContainerDIV.prepend(createDonateItemHTML)
-    } 
+        if (donateIinput != '') {
+            donatesContainerDIV.prepend(createDonateItemHTML)
+        } 
         
 }
