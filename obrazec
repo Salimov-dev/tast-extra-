@@ -1,0 +1,354 @@
+// ЗАДАНИЕ
+
+const tasks = [
+    {
+        id: '1138465078061',
+        completed: false,
+        text: 'Посмотреть новый урок по JavaScript',
+    },
+    {
+        id: '1138465078062',
+        completed: false,
+        text: 'Выполнить тест после урока',
+    },
+    {
+        id: '1138465078063',
+        completed: false,
+        text: 'Выполнить ДЗ после урока',
+    },
+
+];
+
+// Задание (создание формы)
+const tasksMainDiv = document.createElement('div')
+  tasksMainDiv.className = 'tasks'
+
+const tasksWrapper = document.createElement('div')
+  tasksWrapper.className = 'tasks__wrapper'
+  tasksMainDiv.prepend(tasksWrapper)
+
+const createTaskBlock = document.createElement('form')
+  createTaskBlock.className = 'create-task-block'
+  tasksWrapper.prepend(createTaskBlock)
+
+const inputTaskBlock = document.createElement('input')
+  inputTaskBlock.name = 'taskName'
+  inputTaskBlock.className = 'create-task-block__input default-text-input'
+  inputTaskBlock.type = 'text'
+  inputTaskBlock.placeholder = 'Создайте новую задачу'
+  createTaskBlock.prepend(inputTaskBlock)
+
+const buttonTaskBlock = document.createElement('button')
+  buttonTaskBlock.type = 'submit'
+  buttonTaskBlock.className = 'create-task-block__button default-button'
+  buttonTaskBlock.innerHTML = 'Создать'
+  createTaskBlock.append(buttonTaskBlock)
+
+const tasksList = document.createElement('div')
+  tasksList.className = 'tasks-list'
+  tasksWrapper.append(tasksList)
+
+const newError = document.createElement('span')
+  newError.className = 'error-message-block'
+  tasksList.prepend(newError)
+
+const body = document.querySelector('body')
+  body.insertAdjacentElement('afterbegin', tasksMainDiv)
+
+// Задание (submit)
+const createNewTask = document.querySelector('.create-task-block')
+createNewTask.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const { target } = event
+    taskNameInput = target.taskName
+
+  let inputValue = taskNameInput.value.trim()
+
+  let tasksTextItems = []
+  for (let key in tasks) {
+    const newTasks = tasks[key].text
+    tasksTextItems.push(newTasks)
+    console.log('newTasks', newTasks.toLowerCase());
+  }
+
+  inputToLowerCase = function(a) {
+    return a.toLowerCase()
+  }
+  tasksTextItems = tasksTextItems.map(inputToLowerCase)
+
+  console.log('tasksTextItems', tasksTextItems);
+
+  if (inputValue === '') {
+      newError.innerHTML = 'Название задачи не должно быть пустым'
+      createTaskBlockValidation.append(newError)
+
+  } else if (tasksTextItems.includes(inputValue.toLowerCase(), 0)) {
+    console.log('Задача с таким названием уже существует');
+    newError.innerHTML = 'Задача с таким названием уже существует'
+    createTaskBlockValidation.append(newError)
+  
+  } else if (typeof inputValue === 'string') {
+      newError.remove()
+      
+    const newId = Math.floor(Date.now() + Math.random())
+    const newObj = {
+      id: String(newId),
+      completed: false,
+      text: inputValue
+    }
+
+    tasks.push(newObj)
+
+    const newTask = document.createElement('div')
+      tasksList.append(newTask)
+
+    makeNewTask(tasks.length-1)
+
+    inputTaskBlock.value = ''
+    
+    }
+}) 
+
+// Задание (создаем функцию)
+function makeNewTask(a) {
+  const taskItem = document.createElement('div')
+  taskItem.className = 'task-item'
+  taskItem.dataset.taskId = tasks[a].id
+
+const taskItemMainContainer = document.createElement('div')
+  taskItemMainContainer.className = 'task-item__main-container'
+  taskItem.prepend(taskItemMainContainer)
+
+const taskItemMaincontent = document.createElement('div')
+  taskItemMaincontent.className = 'task-item__main-content'
+  taskItemMainContainer.prepend(taskItemMaincontent)
+
+const form = document.createElement('form')
+  taskItemMaincontent.prepend(form)
+
+const input = document.createElement('input')
+  input.className = 'checkbox-form__checkbox'
+  input.type = 'checkbox'
+  input.id = tasks[a].id
+  form.prepend(input)
+
+const label = document.createElement('label')
+  label.htmlFor = tasks[a].id
+  form.append(label)
+
+const span = document.createElement('span')
+  span.className = 'task-item__text'
+  span.innerHTML = tasks[a].text
+  taskItemMaincontent.append(span)
+
+const button = document.createElement('button')
+  button.innerHTML = 'Удалить'
+  button.className = 'task-item__delete-button default-button delete-button'
+  button.dataset.deleteTaskId = 5
+  taskItemMainContainer.append(button)
+
+  tasksList.prepend(taskItem);
+}
+
+tasks.forEach((item, index) => {
+  console.log(makeNewTask(index))
+})
+
+// mouseover
+const createTooltip = (text) => {
+  const tooltip = document.createElement('span')
+  tooltip.textContent = text
+  tooltip.className = 'tooltip'
+
+  return tooltip
+}
+
+document.addEventListener('mouseover', (event) => {
+  const { target } = event
+  const isOverDeleteButton = target.className.includes('task-item__delete-button')
+  if (isOverDeleteButton) {
+    const taskItemHTML = target.closest('.task-item')
+    const taskId = taskItemHTML?.dataset.taskId
+    if (taskId) {
+      const tooltipHTML = createTooltip(`Удалить задачу под номером ${taskId}?`)
+      target.append(tooltipHTML)
+    }
+  }
+})
+
+// mouseout
+document.addEventListener('mouseout', (event) => {
+  const { target } = event
+  const isOutFromDeleteButton = target.className.includes('.task-item__delete-button')
+  if (!isOutFromDeleteButton) {
+    const tooltip = document.querySelector('.tooltip')
+    if (tooltip) {
+      tooltip.remove()
+    }
+  }
+})
+
+// change, input
+const checkTaskNameInputTestOnValidation = (value) => {
+  if (!value || value.includes('@')) {
+    return false
+  }
+
+  return true
+}
+
+const createTaskBlockValidation = document.querySelector('.create-task-block')
+const taskNameInputValidation = createTaskBlockValidation.querySelector('.create-task-block__input')
+
+taskNameInputValidation.addEventListener('input', (event) => {
+  const { target } = event
+  const { value } = target
+  const isValid = checkTaskNameInputTestOnValidation(value)
+  const messageBlockFromDOM = document.querySelector('.error-message-block')
+
+  if (!isValid && !messageBlockFromDOM) {
+    const newMessageBlock = document.createElement('span')
+      newMessageBlock.className = 'error-message-block'
+      newMessageBlock.textContent = 'Ошибка! Текст для задачи не должен быть пустым и не должен содержать символ @'
+      createTaskBlockValidation.append(newMessageBlock)
+  } else if (isValid && messageBlockFromDOM) {
+      messageBlockFromDOM.remove()
+  }
+
+})
+
+// задание - удаление задачи из формы
+const modalOverlay = document.createElement('div')
+  modalOverlay.className = 'modal-overlay modal-overlay_hidden'
+  body.append(modalOverlay)
+
+const deleteModal = document.createElement('div')
+  deleteModal.className = 'delete-modal'
+  modalOverlay.prepend(deleteModal)
+
+const deleteModalQuestion = document.createElement('h3')
+  deleteModalQuestion.className = 'delete-modal__question'
+  deleteModalQuestion.textContent = 'Вы действительно хотите удалить эту задачу?'
+  deleteModal.append(deleteModalQuestion)
+
+const deleteModalButtons = document.createElement('div')
+  deleteModalButtons.className = 'delete-modal__buttons'
+  deleteModal.append(deleteModalButtons)
+
+const deleteModalButtonCancel = document.createElement('button')
+  deleteModalButtonCancel.className = 'delete-modal__button delete-modal__cancel-button'
+  deleteModalButtonCancel.textContent = 'Отмена'
+  deleteModalButtons.append(deleteModalButtonCancel)
+
+const deleteModalButtonConfirm = document.createElement('button')
+  deleteModalButtonConfirm.className = 'delete-modal__button delete-modal__confirm-button'
+  deleteModalButtonConfirm.textContent = 'Удалить'
+  deleteModalButtons.append(deleteModalButtonConfirm)
+
+// удаляем задачу из DOM
+const clickRemoveButton = document.querySelectorAll('.task-item__delete-button')
+const tasksListAddListener = document.querySelector('.tasks-list')
+
+tasksListAddListener.addEventListener('click', (event) => {
+  const isButtonRemove = event.target.closest('.task-item__delete-button')
+  const tasksItem = event.target.closest('.task-item')
+  const itemIdToRemoveFromArray = tasksItem.dataset.taskId
+      if (isButtonRemove) {
+        modalOverlay.classList.remove('modal-overlay_hidden')
+        clickButton(itemIdToRemoveFromArray)
+      }
+})
+
+const clickCancelButton = document.querySelector('.delete-modal__button')
+  clickCancelButton.addEventListener('click', (event) => {
+  modalOverlay.classList.add('modal-overlay_hidden')
+})
+
+function clickButton (id) {
+const clickRemoveConfirmButton = document.querySelector('.delete-modal__confirm-button')
+clickRemoveConfirmButton.addEventListener('click', (event) => {
+  modalOverlay.classList.add('modal-overlay_hidden')
+  const isButtonRemove = event.target.closest('.delete-modal__button')
+  const tasksItem = event.target.closest('.delete-modal__buttons')
+
+      for (i = 0; i < tasks.length; i++) {
+        if (tasks[i].id === id) {
+          const objToRemoveFormArray = tasks[i]
+          const indexOfRemoveElement = tasks.indexOf(objToRemoveFormArray)
+          tasks.splice(indexOfRemoveElement, 1)
+            const testID = document.querySelector(`[data-task-id = '${id}']`)
+            testID.remove()
+            console.log('Массив после удаления задачи: ', tasks);
+        }
+      }
+})
+}
+
+// меняем тему на тёмную
+let isLightTheme = true
+let allTaskItems
+let allButtons
+
+document.addEventListener('keydown', (event) => {
+  const key = event.key
+  // console.log(key);
+  
+    if (event.keyCode == 9 && isLightTheme) {
+      body.style.backgroundColor = '#24292E'
+      isLightTheme = false
+      allTaskItems = document.querySelectorAll('.task-item')
+      allButtons = document.querySelectorAll('button ')
+    
+        allTaskItems.forEach(item => {
+          item.style.color = '#ffffff'
+        })
+          allButtons.forEach(item => {
+            item.style.border = '1px solid #ffffff'
+          })
+
+          document.addEventListener('submit', (event) => {
+
+            allTaskItems = document.querySelectorAll('.task-item')
+            allButtons = document.querySelectorAll('button ')
+    
+              allTaskItems.forEach(item => {
+              item.style.color = '#ffffff'
+            })
+              allButtons.forEach(item => {
+              item.style.border = '1px solid #ffffff'
+            })
+        })
+
+    } else if (event.keyCode == 9 && !isLightTheme) {
+      body.style.backgroundColor = '#ffffff'
+      isLightTheme = true
+
+      allTaskItems.forEach(item => {
+        item.style.color = '#000000'
+      })
+        allButtons.forEach(item => {
+          item.style.border = 'none'
+        })
+
+        document.addEventListener('submit', (event) => {
+
+          allTaskItems = document.querySelectorAll('.task-item')
+          allButtons = document.querySelectorAll('button ')
+  
+            allTaskItems.forEach(item => {
+            item.style.color = '#000000'
+          })
+            allButtons.forEach(item => {
+            item.style.border = 'none'
+          })
+      })
+
+    } else {
+      // body.style.backgroundColor = 'initial'
+    }
+})
+
+
+
+
