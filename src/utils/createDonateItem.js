@@ -6,9 +6,10 @@ export function createDonateItem() {
     const createDonateItemHTML = document.createElement('div')
     createDonateItemHTML.className = 'donate-item'
     createDonateItemHTML.innerHTML = `${timeOfDonate} - <b>${donateIinput}$</b>`
+    const regex = /^0/g
     
     const donatesContainerDIV = document.querySelector('.donates-container__donates')
-        if (donateIinput != '') {
+        if (donateIinput != '' && donateIinput > 0 && donateIinput.match(regex) != 0) {
             donatesContainerDIV.prepend(createDonateItemHTML)
         } 
         

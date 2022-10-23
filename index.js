@@ -8,3 +8,4 @@ makeDonateButton.addEventListener('click', (event) => {
     addTotalAmount()
     document.querySelector('.donate-form__donate-input').value = ''
 })
+
